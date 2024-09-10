@@ -4,12 +4,13 @@ require('dotenv').config();
 
 const botToken = process.env.BOT_TOKEN;
 
-const sessions = {};
-
 function validateTelegramAuthData(initData) 
 {
     const params = new URLSearchParams(initData);
     const paramsObj = Object.fromEntries(params.entries());
+
+    const user = paramsObj.user ? JSON.parse(paramsObj.user) : null;
+    const userId = user ? user.id : null;
 
     const isDateValid = validateDateByUnixTime(paramsObj);
 
@@ -29,11 +30,7 @@ function validateTelegramAuthData(initData)
 
     if (calculatedHash === paramsObj.hash)
     {
-        const sessionId = CryptoJS.lib.WordArray.random(16).toString();
-
-        sessions[sessionId] = { initData: paramsObj };
-
-        return { isValid: true, session: sessionId, message: "Data is verified" };
+        return { isValid: true, userId, message: "Data is verified" };
     }
 
     return { isValid: false, message: "Data validation failed, try again later" };
@@ -52,16 +49,6 @@ function validateDateByUnixTime(paramObj)
     return { isValid: true, message: "Date is valid" };
 }
 
-function validateSession(sessionId)
-{
-    if (!sessions[sessionId])
-    {
-        return { isValid: false, message: "Invalid or expired session" };
-    }
-
-    return { isValid: true };
-}
-
 function validateSecretKey(secretKey)
 {
     if (secretKey !== process.env.CLIENT_SECRET_WORD)
@@ -74,9 +61,9 @@ function validateSecretKey(secretKey)
 
 function checkRequestParams(request)
 {
-    const { sessionId, secretKey, userId, username, refCode } = request.body;
+    const { sessionId, secretKey, userId, username } = request.body;
 
-    if (!sessionId || !userId || !username || !refCode || !secretKey)
+    if (!sessionId || !userId || !username || !secretKey)
     {
         return { isValid: false, message: "Mission paramters" };
     }
@@ -93,10 +80,7 @@ function getEncryptedKey(key, message, isHex = false)
 
 module.exports = 
 {
-    sessions,
-
     validateTelegramAuthData,
-    validateSession,
     validateSecretKey,
 
     checkRequestParams,
