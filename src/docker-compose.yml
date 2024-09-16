@@ -4,7 +4,7 @@ services:
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "6000:6000"
     env_file:
       - .env
     depends_on:
@@ -13,22 +13,22 @@ services:
     networks:
       - api_network
 
-    database:
-      image: api_db_mongo:7.0
-      ports:
-        - "27017:27017"
-      volumes:
-       - mongo_data:/data/db
+  database:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    restart: always
+    networks:
+      - api_network
+    command: ["--bind_ip_all"]
 
-      enviroment:
-        MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-        MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      restart: always
-      networks:
-        - api_network
-  
-  networks:
-    api_network:
+networks:
+  api_network:
 
-  volumes:
-    mongo_data:
+volumes:
+  mongo_data:

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 require('dotenv').config();
 
-const mongoURI = process.env.MONGO_URI; 
+const mongoURI = process.env.TEST_MONGO_URI; 
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true,
      serverSelectionTimeoutMS: 30000 });
