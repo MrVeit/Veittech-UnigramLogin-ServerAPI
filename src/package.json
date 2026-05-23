@@ -11,10 +11,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "body-parser": "^1.20.4",
+    "body-parser": "^1.20.5",
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
-    "express": "^4.22.1",
+    "express": "^4.22.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.22.1"
   }
